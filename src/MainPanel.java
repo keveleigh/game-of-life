@@ -9,7 +9,7 @@ import javax.swing.JFrame;
  * Also, positions the display in the center of the user's screen. 
  * 
  * @author Kurtis Eveleigh
- * @version 0.9.5
+ * @version 1.0.0
  */
 
 public class MainPanel
@@ -19,11 +19,16 @@ public class MainPanel
 		JFrame frame = new JFrame("Game of Life");
 		LifeBoard mainBoard = new LifeBoard();
 		SimMenu topMenu = new SimMenu(mainBoard);
+		mainBoard.setSimMenu(topMenu);
 		frame.setJMenuBar(topMenu);
-		Dimension frameSize = new Dimension(506,551);
-		frame.setMinimumSize(frameSize);
 		frame.setResizable(false);
+	
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.add(mainBoard); //Adds the JPanel to the JFrame for display.
+		frame.setVisible(true);
+		frame.pack();
 		
+		Dimension frameSize = frame.getSize();
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize(); 
 		if (frameSize.height > screenSize.height) 
 		{
@@ -33,11 +38,6 @@ public class MainPanel
 		{
 			frameSize.width = screenSize.width; 
 		}
-		frame.setLocation((screenSize.width - frameSize.width)/2, (screenSize.height - frameSize.height)/2); 
-
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.add(mainBoard); //Adds the JPanel to the JFrame for display.
-		frame.setVisible(true);
-		frame.pack();
+		frame.setLocation((screenSize.width - frameSize.width)/2, (screenSize.height - frameSize.height)/2);
 	}
 }

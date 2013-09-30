@@ -1,99 +1,92 @@
 package mainGame;
-import java.awt.Event;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 
 import javax.swing.ButtonGroup;
+import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.KeyStroke;
 
 /**
- * Initializes all parts of the simulation and displays them in a JFrame.
- * Also, positions the display in the center of the user's screen. 
+ * Uses JMenuBar to provide tools and options at the top of the simulation window. 
  * 
  * @author Kurtis Eveleigh
- * @version 0.9.5
+ * @version 1.0.0
  */
 
 @SuppressWarnings("serial")
 public class SimMenu extends JMenuBar
 {
-	private JMenu options;
-	private JMenu speedSubMenu;
-	private JMenuItem start;
-	private JMenuItem stop;
-	private JMenuItem reset;
+	private JMenu speedMenu;
+	private JButton startStop;
+	private JButton step;
+	private JButton reset;
 	private ButtonGroup speedRadioGroup;
 	private JRadioButtonMenuItem fastButton;
 	private JRadioButtonMenuItem normalButton;
 	private JRadioButtonMenuItem slowButton;
 	private LifeBoard mainBoard;
+	private JLabel genLabel;
+	private int genNum = 0;
 	
 	public SimMenu(LifeBoard mainBoard)
 	{
 		this.mainBoard = mainBoard;
 		SpeedListener spListen = new SpeedListener();
-		StartStopListener ssListen = new StartStopListener();
 		
-		options = new JMenu("Options");
-		start = new JMenuItem("Start");
-		start.addActionListener(ssListen);
-		start.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, Event.CTRL_MASK));
-		start.setMnemonic("Start".charAt(0));
+		startStop = new JButton("Start");
+		startStop.addActionListener(new StartStopListener());
 		
-		stop = new JMenuItem("Stop");
-		stop.addActionListener(ssListen);
-		stop.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, Event.CTRL_MASK));
-		stop.setMnemonic("Stop".charAt(1));
+		step = new JButton("Step");
+		step.addActionListener(new StepListener());
 		
-		reset = new JMenuItem("Reset");
-		reset.addActionListener(ssListen);
-		reset.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, Event.CTRL_MASK));
-		reset.setMnemonic("Reset".charAt(0));
+		reset = new JButton("Reset");
+		reset.addActionListener(new ResetListener());
 		
-		options.add(start);
-		options.add(stop);
-		options.addSeparator();
-		options.add(reset);
-		options.addSeparator();
+		speedMenu = new JMenu("Speed");
 		
-		speedSubMenu = new JMenu();
-	    speedSubMenu.setText("Speed");
-	    speedSubMenu.setMnemonic("Speed".charAt(1));
-
 	    speedRadioGroup = new ButtonGroup();
 
 	    fastButton = new JRadioButtonMenuItem("Fast");
 	    fastButton.setAccelerator(KeyStroke.getKeyStroke('1'));
 	    fastButton.setSelected(false);
-	    fastButton.setMnemonic("Fast".charAt(0));
+	    fastButton.setMnemonic('f');
 	    fastButton.addActionListener(spListen);
 	    speedRadioGroup.add(fastButton);
-	    speedSubMenu.add(fastButton);
+	    speedMenu.add(fastButton);
 	    
 	    normalButton = new JRadioButtonMenuItem("Normal");
 	    normalButton.setAccelerator(KeyStroke.getKeyStroke('2'));
 	    normalButton.setSelected(true);
-	    normalButton.setMnemonic("Normal".charAt(0));
+	    normalButton.setMnemonic('n');
 	    normalButton.addActionListener(spListen);
 	    speedRadioGroup.add(normalButton);
-	    speedSubMenu.add(normalButton);
+	    speedMenu.add(normalButton);
 	  
 	    slowButton = new JRadioButtonMenuItem("Slow");
 		slowButton.setAccelerator(KeyStroke.getKeyStroke('3'));
 	    slowButton.setSelected(false);
-	    slowButton.setMnemonic("Slow".charAt(0));
+	    slowButton.setMnemonic('s');
 	    slowButton.addActionListener(spListen);
 	    speedRadioGroup.add(slowButton);
-	    speedSubMenu.add(slowButton);
-
-	    options.add(speedSubMenu);
-
-		this.add(options);
+	    speedMenu.add(slowButton);
+	    
+	    genLabel = new JLabel(" Generations: " + genNum);
+	    
+		this.add(startStop);
+		this.add(step);
+		this.add(reset);
+	    this.add(speedMenu);
+		this.add(genLabel);
+	}
+	
+	public void nextGen()
+	{
+		genNum++;
+		genLabel.setText(" Generations: " + genNum);
 	}
 	
 	private class SpeedListener implements ActionListener
@@ -121,18 +114,42 @@ public class SimMenu extends JMenuBar
 		@Override
 		public void actionPerformed(ActionEvent e)
 		{
-			if(e.getSource().equals(start))
+			if(mainBoard.timerIsEnabled())
 			{
-				mainBoard.enableTimer(true);
-			}
-			else if(e.getSource().equals(stop))
-			{
+				startStop.setText("Start");
 				mainBoard.enableTimer(false);
+				step.setEnabled(true);
 			}
 			else
 			{
-				mainBoard.reset();
+				startStop.setText("Stop");
+				mainBoard.enableTimer(true);
+				step.setEnabled(false);
 			}
+
+		}
+	}
+	
+	private class ResetListener implements ActionListener
+	{
+		@Override
+		public void actionPerformed(ActionEvent arg0)
+		{
+			genNum = 0;
+			genLabel.setText(" Generations: " + genNum);
+			startStop.setText("Start");
+			step.setEnabled(true);
+			mainBoard.reset();
+		}
+		
+	}
+	
+	private class StepListener implements ActionListener
+	{
+		@Override
+		public void actionPerformed(ActionEvent arg0)
+		{
+			mainBoard.step();
 		}
 	}
 }

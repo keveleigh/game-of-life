@@ -1,4 +1,5 @@
 package mainGame;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
@@ -11,11 +12,10 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 
 /**
- * Initializes all parts of the simulation and displays them in a JFrame.
- * Also, positions the display in the center of the user's screen. 
+ * Displays the cell simulation in a JPanel.
  * 
  * @author Kurtis Eveleigh
- * @version 0.9.5
+ * @version 1.0.0
  */
 
 @SuppressWarnings("serial")
@@ -24,6 +24,7 @@ public class LifeBoard extends JPanel
 	private Timer timer;
 	private LifeGame game;
 	private Point lastMouseLoc;
+	private SimMenu sMenu;
 	
 	public LifeBoard()
 	{
@@ -32,6 +33,17 @@ public class LifeBoard extends JPanel
 		game = new LifeGame();
 		addMouseListener(new ClickListener());
 		addMouseMotionListener(new ClickListener());
+		setPreferredSize(new Dimension(500,500));
+	}
+	
+	public void setSimMenu(SimMenu sMenu)
+	{
+		this.sMenu = sMenu;
+	}
+	
+	public boolean timerIsEnabled()
+	{
+		return timer.isRunning();
 	}
 	
 	public void enableTimer(boolean enable)
@@ -44,6 +56,13 @@ public class LifeBoard extends JPanel
 		{
 			timer.stop();
 		}
+	}
+	
+	public void step()
+	{
+		game.updateAll();
+		repaint();
+		sMenu.nextGen();
 	}
 	
 	public void changeTimerSpeed(int newSpeed)
@@ -72,8 +91,7 @@ public class LifeBoard extends JPanel
 		@Override
 		public void actionPerformed(ActionEvent e)
 		{
-			game.updateAll();
-			repaint();
+			step();
 		}
 	}
 		

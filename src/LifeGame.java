@@ -1,16 +1,16 @@
 package mainGame;
 
 /**
- * Initializes all parts of the simulation and displays them in a JFrame.
- * Also, positions the display in the center of the user's screen. 
+ * Provides the logic for the simulation.
  * 
  * @author Kurtis Eveleigh
- * @version 0.9.5
+ * @version 1.0.0
  */
 
 public class LifeGame
 {
 	private Cell[][] cells;
+	private int[][] neighbors;
 	
 	public LifeGame()
 	{
@@ -26,67 +26,12 @@ public class LifeGame
 	
 	public void updateAll()
 	{
-		int[][] neighbors = new int[300][300];
+		neighbors = new int[300][300];
 		for(int i=0; i<cells.length; i++)
 		{
 			for(int j=0; j<cells[0].length; j++)
 			{
-				try
-				{
-					neighbors[i][j] += cells[i+1][j+1].getState();
-				}
-				catch(ArrayIndexOutOfBoundsException e)
-				{
-				}
-				try
-				{
-					neighbors[i][j] += cells[i+1][j].getState();
-				}
-				catch(ArrayIndexOutOfBoundsException e)
-				{
-				}
-				try
-				{
-					neighbors[i][j] += cells[i+1][j-1].getState();
-				}
-				catch(ArrayIndexOutOfBoundsException e)
-				{
-				}
-				try
-				{
-					neighbors[i][j] += cells[i][j+1].getState();
-				}
-				catch(ArrayIndexOutOfBoundsException e)
-				{
-				}
-				try
-				{
-					neighbors[i][j] += cells[i][j-1].getState();
-				}
-				catch(ArrayIndexOutOfBoundsException e)
-				{
-				}
-				try
-				{
-					neighbors[i][j] += cells[i-1][j+1].getState();
-				}
-				catch(ArrayIndexOutOfBoundsException e)
-				{
-				}
-				try
-				{
-					neighbors[i][j] += cells[i-1][j].getState();
-				}
-				catch(ArrayIndexOutOfBoundsException e)
-				{
-				}
-				try
-				{
-					neighbors[i][j] += cells[i-1][j-1].getState();
-				}
-				catch(ArrayIndexOutOfBoundsException e)
-				{
-				}
+				neighbors[i][j] = getNumNeighbors(i,j);
 			}
 		}
 		
@@ -104,6 +49,80 @@ public class LifeGame
 				}
 			}
 		}
+	}
+	
+	public void updateNeighborsOf(int i, int j)
+	{
+		neighbors[i+1][j+1] = getNumNeighbors(i+1,j+1);
+		neighbors[i+1][j] = getNumNeighbors(i+1,j);
+		neighbors[i+1][j-1] = getNumNeighbors(i+1,j-1);
+		neighbors[i][j+1] = getNumNeighbors(i,j+1);
+		neighbors[i][j-1] = getNumNeighbors(i,j-1);
+		neighbors[i-1][j+1] = getNumNeighbors(i-1,j+1);
+		neighbors[i-1][j] = getNumNeighbors(i-1,j);
+		neighbors[i-1][j-1] = getNumNeighbors(i-1,j-1);
+	}
+	
+	public int getNumNeighbors(int i, int j)
+	{
+		int neighbors = 0;
+		try
+		{
+			neighbors += cells[i+1][j+1].getState();
+		}
+		catch(ArrayIndexOutOfBoundsException e)
+		{
+		}
+		try
+		{
+			neighbors += cells[i+1][j].getState();
+		}
+		catch(ArrayIndexOutOfBoundsException e)
+		{
+		}
+		try
+		{
+			neighbors += cells[i+1][j-1].getState();
+		}
+		catch(ArrayIndexOutOfBoundsException e)
+		{
+		}
+		try
+		{
+			neighbors += cells[i][j+1].getState();
+		}
+		catch(ArrayIndexOutOfBoundsException e)
+		{
+		}
+		try
+		{
+			neighbors += cells[i][j-1].getState();
+		}
+		catch(ArrayIndexOutOfBoundsException e)
+		{
+		}
+		try
+		{
+			neighbors += cells[i-1][j+1].getState();
+		}
+		catch(ArrayIndexOutOfBoundsException e)
+		{
+		}
+		try
+		{
+			neighbors += cells[i-1][j].getState();
+		}
+		catch(ArrayIndexOutOfBoundsException e)
+		{
+		}
+		try
+		{
+			neighbors += cells[i-1][j-1].getState();
+		}
+		catch(ArrayIndexOutOfBoundsException e)
+		{
+		}
+		return neighbors;
 	}
 	
 	public Cell[][] getCells()
