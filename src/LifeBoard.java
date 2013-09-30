@@ -1,28 +1,54 @@
+package mainGame;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 
 import javax.swing.JPanel;
 import javax.swing.Timer;
+
+/**
+ * Initializes all parts of the simulation and displays them in a JFrame.
+ * Also, positions the display in the center of the user's screen. 
+ * 
+ * @author Kurtis Eveleigh
+ * @version 0.9.5
+ */
 
 @SuppressWarnings("serial")
 public class LifeBoard extends JPanel
 {
 	private Timer timer;
-//	private JButton startButton;
 	private LifeGame game;
+	private Point lastMouseLoc;
 	
 	public LifeBoard()
 	{
-		timer = new Timer(50, new TimerListener());
+		timer = new Timer(150, new TimerListener());
 		timer.setRepeats(true);
-//		startButton = new JButton("Start");
-//		startButton.addActionListener(new StartListener());
 		game = new LifeGame();
 		addMouseListener(new ClickListener());
+		addMouseMotionListener(new ClickListener());
+	}
+	
+	public void enableTimer(boolean enable)
+	{
+		if(enable)
+		{
+			timer.start();
+		}
+		else
+		{
+			timer.stop();
+		}
+	}
+	
+	public void changeTimerSpeed(int newSpeed)
+	{
+		timer.setDelay(newSpeed);
 	}
 	
 	public void paintComponent(Graphics g)
@@ -50,36 +76,47 @@ public class LifeBoard extends JPanel
 			repaint();
 		}
 	}
-	
-//	private class StartListener implements ActionListener
-//	{
-//		@Override
-//		public void actionPerformed(ActionEvent e)
-//		{
-//			timer.start();
-//		}
-//	}
-	
-	private class ClickListener implements MouseListener
+		
+	private class ClickListener implements MouseListener, MouseMotionListener
 	{
 		@Override
 		public void mousePressed(MouseEvent e)
 		{
-			Point loc = e.getPoint();
-			game.getCells()[loc.x/5+100][loc.y/5+100].changeState();
+			lastMouseLoc = e.getPoint();
+			game.getCells()[lastMouseLoc.x/5+100][lastMouseLoc.y/5+100].changeState();
+			repaint();
+		}
+		
+		@Override
+		public void mouseDragged(MouseEvent e)
+		{
+			Point newLoc= e.getPoint();
+			if(newLoc.x/5 != lastMouseLoc.x/5 && newLoc.y/5 != lastMouseLoc.y/5)
+			{
+				lastMouseLoc = newLoc;
+				game.getCells()[newLoc.x/5+100][newLoc.y/5+100].changeState();
+			}
+			if(newLoc.x/5 != lastMouseLoc.x/5)
+			{
+				lastMouseLoc.x = newLoc.x;
+				game.getCells()[newLoc.x/5+100][newLoc.y/5+100].changeState();
+			}
+			if(newLoc.y/5 != lastMouseLoc.y/5)
+			{
+				lastMouseLoc.y = newLoc.y;
+				game.getCells()[newLoc.x/5+100][newLoc.y/5+100].changeState();
+			}
 			repaint();
 		}
 
 		@Override
 		public void mouseEntered(MouseEvent e)
 		{	
-			timer.stop();
 		}
 
 		@Override
 		public void mouseExited(MouseEvent e)
 		{	
-			timer.start();
 		}
 
 		@Override
@@ -91,5 +128,17 @@ public class LifeBoard extends JPanel
 		public void mouseClicked(MouseEvent e)
 		{
 		}
+
+		@Override
+		public void mouseMoved(MouseEvent arg0)
+		{
+		}
+	}
+
+	public void reset()
+	{
+		timer.stop();
+		game = new LifeGame();	
+		repaint();
 	}
 }

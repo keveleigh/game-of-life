@@ -1,3 +1,13 @@
+package mainGame;
+
+/**
+ * Initializes all parts of the simulation and displays them in a JFrame.
+ * Also, positions the display in the center of the user's screen. 
+ * 
+ * @author Kurtis Eveleigh
+ * @version 0.9.5
+ */
+
 public class LifeGame
 {
 	private Cell[][] cells;
