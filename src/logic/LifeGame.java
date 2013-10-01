@@ -1,4 +1,4 @@
-package MainGame;
+package logic;
 
 /**
  * Provides the logic for the simulation.

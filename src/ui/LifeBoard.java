@@ -1,4 +1,4 @@
-package MainGame;
+package ui;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -11,6 +11,9 @@ import java.awt.event.MouseMotionListener;
 
 import javax.swing.JPanel;
 import javax.swing.Timer;
+
+import logic.Cell;
+import logic.LifeGame;
 
 /**
  * Displays the cell simulation in a JPanel.
