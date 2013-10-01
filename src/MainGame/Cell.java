@@ -1,4 +1,4 @@
-package mainGame;
+package MainGame;
 
 /**
  * Represents a single cell in the simulation space.

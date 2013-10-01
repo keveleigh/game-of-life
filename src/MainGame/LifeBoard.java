@@ -1,4 +1,5 @@
-package mainGame;
+package MainGame;
+
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Point;
